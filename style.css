@@ -45,7 +45,7 @@ body{
     
 }
 
-.shorten-btn{
+#shorten-btn{
     border-radius: 0px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
