@@ -1,9 +1,9 @@
-document.getElementById("shorten-btn").onclick = ShortenUrlClick;
 
-function ShortenUrlClick(){
-    var inputText = document.getElementById("link-input").value;
+//Button onclick event
+$("#shorten-btn").click(function() {
+    var inputText = $("#link-input").val();
     console.log(inputText);
-    if(inputText !== ""){
+    if (inputText !== "") {
         alert("Ok");
     }
-}
+});
