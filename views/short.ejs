@@ -9,8 +9,8 @@
     
     <div  class="d-flex justify-content-center">
         <div id="white-container" class="px-3 py-1">
-            <p>Short link: <a href="#"><%= shortLink %></a></p>
-            <p>Original link: <a href="#"> <%= originalLink %></a></p>
+            <p>Short link: <a href=<%= originalLink %>><%= shortLink %></a></p>
+            <p>Original link: <a href=<%= originalLink %>> <%= originalLink %></a></p>
         </div>
     </div>
 <%- include("partials/footer") %>
