@@ -16,35 +16,44 @@ var currOriginalLink = "";
 
 app.get("/", function(req, res){
     res.sendFile(__dirname + "/index.html");
+   
+
 })
 
 app.post("/", function(req, res){
     const inputText = req.body.link;
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
-    
-    links[inputText] = HashString(inputText);
-    
-    // links["https://www.youtube.com"] = HashString("https://www.youtube.com");
+    hashedText = fullUrl + HashString(inputText);
 
-    // for(var key in links){
-    //     var value = links[key];
-    //     console.log("Key: " + key + " Value: " + value);
-    // }
-    
+    links[inputText] = hashedText;
+
     currOriginalLink = inputText;
-    currShortLink = HashString(inputText);
+    currShortLink = hashedText
 
-    console.log("0:   " + currOriginalLink);
-    console.log("0:   " + currShortLink);
+    res.redirect("/short");
 })
 
 
 app.get("/short", function(req,res){
-    //res.sendFile(__dirname + "/short.html");
-    console.log("1:   " + currOriginalLink);
-    console.log("1:   " + currShortLink);
+    // var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
     res.render("short", {shortLink: currShortLink, originalLink: currOriginalLink});
 })
+
+
+
+app.get("/:link", function(req, res){
+    //const originalLink = getKeyByValue(links, req.params.link);
+    // console.log("1:  " + originalLink);
+    // res.redirect(originalLink);
+    console.log("1:  " + currOriginalLink);
+    //res.redirect(currOriginalLink);
+    res.writeHead(301, {
+        Location: currOriginalLink
+      }).end();
+})
+
 
 function HashString(text){
     const hash = crypto.createHash("sha256");
@@ -54,6 +63,9 @@ function HashString(text){
     return hashedText.slice(0,8);
 }
 
+// function getKeyByValue(object, value) {
+//     return Object.keys(object).find(key => object[key] === value);
+//   }
 
 app.listen(3000, function(){
     console.log("Server is running on port 3000");
