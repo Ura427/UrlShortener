@@ -1,0 +1,45 @@
+body{
+    background-color: red;
+}
+
+#header-div{
+    background-color: #fff;
+}
+
+#top-header{
+    font-weight: 700;
+    color:#006cff;
+}
+
+body{
+    background-color: #f9f9f9;
+}
+
+#body-header{
+    font-weight: 700;
+}
+
+#body-content{
+    color: #505050;
+}
+
+
+#white-container{
+    background-color: #fff;
+    width: 600px
+}
+
+footer{
+    position: absolute;
+    bottom:0;
+    width: 100%;
+    height: 50px;
+
+    border-top: 4px solid #00a0db;
+    margin-top: 40px;
+    padding: 20px 0 50px;
+
+    text-align: center;
+    background: #333;
+    color:#eee;
+}
