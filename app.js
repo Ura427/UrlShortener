@@ -1,22 +1,47 @@
+//imports
 const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
+const mongoose = require("mongoose");
 
-const index = require("./public/js/index");
+//modules
+//const index = require("./public/js/index");
+const mongooseDb = require("./mongooseDb"); 
 
+//app uses
 const app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true}));
 
 app.set('view engine', 'ejs');
 
+//global variables
 const links = {};//Store original links and their short versions
 var currShortLink = "";
 var currOriginalLink = "";
 
+
+//mongoose
+// mongoose.connect("mongodb://127.0.0.1:27017/links");
+// const Link = mongoose.model("Link", 
+// { 
+//     originalLink:{
+//         type: String,
+//         required: true,
+//         unique: true
+//     },
+//     shortenedLink:{
+//         type: String,
+//         required: true,
+//         unique: true
+//     } 
+    
+// });
+
+
 //Home GET
 app.get("/", function(req, res){
-    res.sendFile(__dirname + "/index.html");   
+    res.sendFile(__dirname + "/index.html"); 
 })
 
 //Home POST
@@ -32,18 +57,28 @@ app.post("/", function(req, res){
     currOriginalLink = inputText;
     currShortLink = hashedText
 
+
+    mongooseDb.AddToDb(currOriginalLink, currShortLink);
+
+    //mongoose
+    // const newLink = new Link({ originalLink: currOriginalLink, shortenedLink: currShortLink });
+    // newLink.save().then(() => console.log("Link saved successfully"));
+
     res.redirect("/short");
 })
 
 //Short GET
-app.get("/short", function(req,res){
-    res.render("short", {shortLink: currShortLink, originalLink: currOriginalLink});
+app.get("/short", async function(req,res){
+    var linkObject = await mongooseDb.Find(currShortLink);
+    //res.render("short", {shortLink: currShortLink, originalLink: currOriginalLink});
+    console.log(linkObject);
+    res.render("short", {shortLink: linkObject.shortenedLink, originalLink: linkObject.originalLink});
 })
 
 
 //Link GET
 app.get("/:link", function(req, res){
-    //const originalLink = getKeyByValue(links, req.params.link);
+
     res.writeHead(301, {
         Location: currOriginalLink
       }).end();
