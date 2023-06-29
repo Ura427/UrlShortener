@@ -1,0 +1,16 @@
+<%- include("partials/header") %>
+
+    <div class="d-flex justify-content-center pt-2 pb-4">
+        <div id="body-content">
+            <h2 id="body-header">Your shortened URL</h2>
+            <p>Copy the shortened link and share it in messages, texts, posts, websites and other locations.</p>
+        </div>
+    </div>
+    
+    <div  class="d-flex justify-content-center">
+        <div id="white-container" class="px-3 py-1">
+            <p>Short link: <a href=<%= originalLink %>><%= shortLink %></a></p>
+            <p>Original link: <a href=<%= originalLink %>> <%= originalLink %></a></p>
+        </div>
+    </div>
+<%- include("partials/footer") %>
