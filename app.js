@@ -1,72 +1,70 @@
+//imports
 const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
+const mongoose = require("mongoose");
 
-const index = require("./public/js/index");
+//modules
+const mongooseDb = require("./mongooseDb"); 
+const cryptography = require("./cryptography");
 
+
+//app uses
 const app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true}));
 
 app.set('view engine', 'ejs');
 
-const links = {};
+//global variables
 var currShortLink = "";
 var currOriginalLink = "";
 
-app.get("/", function(req, res){
-    res.sendFile(__dirname + "/index.html");
-   
 
+//Home GET
+app.get("/", function(req, res){
+    res.sendFile(__dirname + "/index.html"); 
 })
 
+//Home POST
 app.post("/", function(req, res){
-    const inputText = req.body.link;
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    const inputText = req.body.link;//Get input text value
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl; //Get full page url
 
-    hashedText = fullUrl + HashString(inputText);
+    hashedText = fullUrl + cryptography.HashString(inputText);
 
-    links[inputText] = hashedText;
-
+    //Set current links
     currOriginalLink = inputText;
     currShortLink = hashedText
+
+
+    mongooseDb.AddToDb(currOriginalLink, currShortLink);
 
     res.redirect("/short");
 })
 
+//Short GET
+app.get("/short", async function(req,res){
+    var linkObject = await mongooseDb.Find(currShortLink);
 
-app.get("/short", function(req,res){
-    // var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-
-    res.render("short", {shortLink: currShortLink, originalLink: currOriginalLink});
+    res.render("short", {shortLink: linkObject.shortenedLink, originalLink: linkObject.originalLink});
 })
 
 
+//Link GET
+app.get("/:link", async function(req, res){
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl; //Get full page url
 
-app.get("/:link", function(req, res){
-    //const originalLink = getKeyByValue(links, req.params.link);
-    // console.log("1:  " + originalLink);
-    // res.redirect(originalLink);
-    console.log("1:  " + currOriginalLink);
-    //res.redirect(currOriginalLink);
-    res.writeHead(301, {
-        Location: currOriginalLink
+
+     var linkObject = await mongooseDb.Find(fullUrl);
+
+      res.writeHead(301, {
+        Location: linkObject.originalLink
       }).end();
 })
 
 
-function HashString(text){
-    const hash = crypto.createHash("sha256");
-    hash.update(text);
-    const hashedText = hash.digest('hex');
-
-    return hashedText.slice(0,8);
-}
-
-// function getKeyByValue(object, value) {
-//     return Object.keys(object).find(key => object[key] === value);
-//   }
-
+//Connect to port
 app.listen(3000, function(){
     console.log("Server is running on port 3000");
 });
