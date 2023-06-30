@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 
 //modules
 const mongooseDb = require("./mongooseDb"); 
+const cryptography = require("./cryptography");
+
 
 //app uses
 const app = express();
@@ -15,7 +17,6 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.set('view engine', 'ejs');
 
 //global variables
-//const links = {};//Store original links and their short versions
 var currShortLink = "";
 var currOriginalLink = "";
 
@@ -30,9 +31,7 @@ app.post("/", function(req, res){
     const inputText = req.body.link;//Get input text value
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl; //Get full page url
 
-    hashedText = fullUrl + HashString(inputText);
-
-    //links[inputText] = hashedText;//Add hashed url in dictionary
+    hashedText = fullUrl + cryptography.HashString(inputText);
 
     //Set current links
     currOriginalLink = inputText;
@@ -47,7 +46,7 @@ app.post("/", function(req, res){
 //Short GET
 app.get("/short", async function(req,res){
     var linkObject = await mongooseDb.Find(currShortLink);
-    //console.log(linkObject);
+
     res.render("short", {shortLink: linkObject.shortenedLink, originalLink: linkObject.originalLink});
 })
 
@@ -55,28 +54,15 @@ app.get("/short", async function(req,res){
 //Link GET
 app.get("/:link", async function(req, res){
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl; //Get full page url
-    //console.log(fullUrl + req.params.link);
-    // res.writeHead(301, {
-    //     Location: currOriginalLink
-    //   }).end();
 
-     //var redUrl = fullUrl + "/" + req.params.link;
-     console.log(fullUrl);
+
      var linkObject = await mongooseDb.Find(fullUrl);
-     console.log(linkObject);
+
       res.writeHead(301, {
         Location: linkObject.originalLink
       }).end();
 })
 
-//Hashing string
-function HashString(text){
-    const hash = crypto.createHash("sha256");
-    hash.update(text);
-    const hashedText = hash.digest('hex');
-
-    return hashedText.slice(0,8);
-}
 
 //Connect to port
 app.listen(3000, function(){
