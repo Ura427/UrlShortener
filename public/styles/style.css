@@ -1,6 +1,11 @@
 body{
-    background: #f9f9f9;
+    /* background: #f9f9f9; */
+    background-image: url("../images/background3.jpg");
+    background-size: cover;
+
+    font-family: "Open sans";
 }
+
 
 /* #header-div{
     display: flex;
@@ -9,38 +14,50 @@ body{
 } */
 
 #top-header{
-    color:#006cff
-    
+    color:#006cff;
+    font-family: "Open sans";
+    font-size: 4rem;
 }
 
 #top-header, .container-header{
-    font-weight: 700;
+    font-weight: 500;
+}
+
+.container-header{
+    font-family: "Open sans";
+    /* font-family: "Montserrat";
+    font-family: "Lato"; */
+    font-weight: 650;
+    color: #505050;
+    padding: 20px 0px;
 }
 
 #white-container{
     background: #fff;
-    width: 600px
-    /* background-color: red; */
+    width: 600px;
+    border-radius: 12px;
+
+    box-shadow: 2px 2px 2px #bbbec0;
 }
 
-.container-header{
-    color: #505050;
-}
 
 #formurl{
     display: flex;
     justify-content: center;
     height: 3rem;
+    padding: 0px 15px;
     
 }
 
 #link-input{
-    width: 350px;
-    border-radius: 0;
+    /* width: 350px; */
     border:1px solid #bbb;
     border-bottom-left-radius: 2px; 
     border-top-left-radius: 2px;  
-    border-right:none
+    border-right:none;
+
+    font-size: 18px;
+    flex:1
 
     
 }
@@ -49,11 +66,16 @@ body{
     border-radius: 0px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
-    /* background-color: red; */
+
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .container-p{
     font-size: 0.8rem;
+    line-height: 22px;
+    padding-top: 25px;
+    padding-bottom: 15px;
 }
 
 
@@ -67,10 +89,7 @@ footer{
 
     border-top: 4px solid #00a0db;
     margin-top: 40px;
-    /* padding: 20px 0 121px;  */
     padding: 20px 0 50px;
-
-    /* line-height: 50px; */
 
     text-align: center;
     background: #333;

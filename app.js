@@ -1,13 +1,14 @@
 //imports
 const express = require("express");
 const bodyParser = require("body-parser");
-const crypto = require("crypto");
 const mongoose = require("mongoose");
 
 //modules
 const mongooseDb = require("./mongooseDb"); 
 const cryptography = require("./cryptography");
+const urlValidation = require("./urlValidation");
 
+//const index = require("./public/js/index");
 
 //app uses
 const app = express();
@@ -29,18 +30,21 @@ app.get("/", function(req, res){
 //Home POST
 app.post("/", function(req, res){
     const inputText = req.body.link;//Get input text value
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl; //Get full page url
-
-    hashedText = fullUrl + cryptography.HashString(inputText);
+    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl; //Get full page url
+    const hashedText = fullUrl + cryptography.HashString(inputText);
 
     //Set current links
     currOriginalLink = inputText;
     currShortLink = hashedText
 
-
-    mongooseDb.AddToDb(currOriginalLink, currShortLink);
-
-    res.redirect("/short");
+    if(urlValidation.isValidUrl(currOriginalLink)){
+        mongooseDb.AddToDb(currOriginalLink, currShortLink);
+        res.redirect("/short");
+     } else{
+        //index.clearAndFocus();
+        //res.render("index", { errorMessage: "This link is invalid" });
+        //console.log("This link is invalid");
+     }
 })
 
 //Short GET
@@ -53,14 +57,14 @@ app.get("/short", async function(req,res){
 
 //Link GET
 app.get("/:link", async function(req, res){
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl; //Get full page url
+    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    const linkObject = await mongooseDb.Find(fullUrl);
 
+    const link = linkObject.originalLink;
 
-     var linkObject = await mongooseDb.Find(fullUrl);
-
-      res.writeHead(301, {
-        Location: linkObject.originalLink
-      }).end();
+    res.writeHead(301, {
+        Location: link
+        }).end();
 })
 
 
